@@ -1,0 +1,43 @@
+import pandas as pd
+import numpy as np
+
+from bokeh.plotting import figure
+from bokeh.tile_providers import get_provider, WIKIMEDIA, CARTODBPOSITRON, STAMEN_TERRAIN, STAMEN_TONER, ESRI_IMAGERY, OSM
+from bokeh.io import output_notebook, show
+
+import json
+
+# Kosun Notebook üzerinde çıktı vermesi için
+output_notebook()
+
+with open("ucuslar.json", "r", encoding="utf-8") as file:
+    ucus = json.load(file)
+    #print(type(ucus))
+    ucus = pd.DataFrame.from_dict(ucus)
+    #print(type(ucus))
+    
+#print(ucus)
+
+#############################################
+
+osmHarita = get_provider(OSM)
+
+p = figure(plot_width=900, plot_height=700, x_range=(3000000, 5000000), y_range=(3500000, 6000000),
+           x_axis_type="mercator", y_axis_type="mercator", tooltips=[("Ülke", "@origin_country"), 
+            ("Uçak Adı", "@callsign"), ("(Long, Lat)", "(@long, @lat)")], title = "Uçak Konumları")
+
+p.add_tile(osmHarita)
+
+
+def wgs84_to_web_mercator(df, lon, lat):
+            k = 6378137
+            df["MercatorX"] = df[lon] * (k * np.pi/180.0)
+            df["MercatorY"] = np.log(np.tan((90 + df[lat]) * np.pi/360.0)) * k
+            return df
+
+# Fonsiyonu çağır!!!!
+ucus_yeni = wgs84_to_web_mercator(ucus,"long","lat")
+        
+p.circle(x = "MercatorX", y = "MercatorY", size=6, fill_color="blue", line_color="blue", fill_alpha=0.5, source=ucus)
+
+show(p)
