@@ -7,7 +7,7 @@ from bokeh.tile_providers import get_provider, OSM
 from bokeh.io import output_notebook, show, curdoc
 
 """ Kodun Notebook üzerinde çıktı vermesi için """
-#output_notebook()
+output_notebook()
 
 
 """ Gelen coğrafi koordinatları web mercator dönüştür """
@@ -50,12 +50,12 @@ flight_df = flight_df.fillna('No Data') #replace NAN with No Data
 #print(flight)
 #print(type(flight))
 
-
 """ Fonsiyonu çağır """
 wgs84_to_web_mercator(flight_df)
 flight_df['rot_angle'] = flight_df['true_track']*-1
 icon_url = 'https://cdn-icons-png.flaticon.com/512/1679/1679938.png'
 flight_df['url'] = icon_url
+
 
 
 """ Nerelere şekil çizileceğine dair bilgileri gir """
@@ -78,6 +78,7 @@ p.image_url(url='url', x='MercatorX', y='MercatorY', source=flight_df, anchor='c
 
 """ Çizilecek şekilleri ayarla """
 p.circle(x = "MercatorX", y = "MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_df)
+
 
 """ Haritayı göster """
 show(p)
