@@ -73,11 +73,11 @@ p.add_tile(tile_provider)
 
 
 """ Uçak figürlerini çizdir """
-p.image_url(url='url', x='MercatorX', y='MercatorY', source=flight_df, anchor='center', angle_units='deg', angle='rot_angle', h_units='screen', w_units='screen', w=30, h=30)
+p.image_url(url='url', x='MercatorX', y='MercatorY', source=flight_df, anchor='center', angle_units='deg', angle='rot_angle', h_units='screen', w_units='screen', w=25, h=25)
 
 
 """ Çizilecek şekilleri ayarla """
-p.circle(x = "MercatorX", y = "MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_df)
+p.circle(x="MercatorX", y="MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_df)
 
 
 """ Haritayı göster """
