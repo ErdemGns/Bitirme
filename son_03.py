@@ -5,11 +5,23 @@ import numpy as np
 from bokeh.plotting import figure
 from bokeh.tile_providers import get_provider, OSM
 from bokeh.io import output_notebook, show, curdoc
+from bokeh.models import ColumnDataSource
 
 """ Kodun Notebook üzerinde çıktı vermesi için """
 output_notebook()
 
 def modify_doc(doc):
+    
+    
+    """ İlk figürlerin oluşmasından önce hata vermemesi için verileri null ata """
+    flight_source = ColumnDataSource({
+        'icao24':[],'callsign':[],'origin_country':[],
+        'time_position':[],'last_contact':[],'long':[],'lat':[],
+        'baro_altitude':[],'on_ground':[],'velocity':[],'true_track':[],
+        'vertical_rate':[],'sensors':[],'geo_altitude':[],'squawk':[],'spi':[],
+        'position_source':[],'MercatorX':[],'MercatorY':[],'rot_angle':[],'url_data':[] })
+    
+    
     def update():
         """ Gelen coğrafi koordinatları web mercator dönüştür """
         def wgs84_to_web_mercator(df, lon="long", lat="lat"):
@@ -48,27 +60,38 @@ def modify_doc(doc):
         #print(type(flight_df.columns))
         """ NAN tipinde gelen boş alanları hata almamak amaçlı No Data yap flight_df"""
         flight_df = flight_df.fillna('No Data') #replace NAN with No Data
-        #print(flight)
-        #print(type(flight))
+        #print(flight_df)
+        #print(type(flight_df))
 
         """ Fonsiyonu çağır """
         wgs84_to_web_mercator(flight_df)
         flight_df['rot_angle'] = flight_df['true_track']*-1
         icon_url = 'https://cdn-icons-png.flaticon.com/512/1679/1679938.png'
-        flight_df['url'] = icon_url
+        flight_df['url_data'] = icon_url
+        
+        
+        """ Verilerin güncelleme işlemini yap """
+        n_roll = len(flight_df.index)
+        flight_source.stream(flight_df.to_dict(orient="list"),n_roll)
+        
+        
             
-        """ Uçak figürlerini çizdir """
-        p.image_url(url='url', x='MercatorX', y='MercatorY', source=flight_df, anchor='center', angle_units='deg', angle='rot_angle', h_units='screen', w_units='screen', w=25, h=25)
-
-
-        """ Çizilecek şekilleri ayarla """
-        p.circle(x="MercatorX", y="MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_df)
-
-
+    
+    doc.add_periodic_callback(update, 1000)
+    
     """ Nerelere şekil çizileceğine dair bilgileri gir """
     p = figure(plot_width=900, plot_height=700, x_range=(3000000, 5000000), y_range=(3500000, 6000000),
                x_axis_type="mercator", y_axis_type="mercator", tooltips=[("Ülke", "@origin_country"), 
                 ("Uçak Adı", "@callsign"), ("(Long, Lat)", "(@long, @lat)")], title = "Anlık Uçak Konumları")
+
+ 
+    """ Uçak figürlerini çizdir """
+    p.image_url(url='url_data', x='MercatorX', y='MercatorY', source=flight_source, anchor='center', angle_units='deg', angle='rot_angle', h_units='screen', w_units='screen', w=25, h=25)
+
+
+    """ Çizilecek şekilleri ayarla """
+    p.circle(x="MercatorX", y="MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_source)
+
 
 
     """ Harita altlığını çağır """
@@ -81,8 +104,8 @@ def modify_doc(doc):
 
     
 
-    doc.add_periodic_callback(update, 1000)
     doc.add_root(p)
 
+    
 """ Haritayı göster """
 show(modify_doc)
