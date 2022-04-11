@@ -4,14 +4,13 @@ import pandas as pd
 import numpy as np
 from bokeh.plotting import figure
 from bokeh.tile_providers import get_provider, OSM
-from bokeh.io import output_notebook, show, curdoc
+from bokeh.io import output_notebook, show
 from bokeh.models import ColumnDataSource
 
 """ Kodun Notebook üzerinde çıktı vermesi için """
 output_notebook()
 
 def modify_doc(doc):
-    
     
     """ İlk figürlerin oluşmasından önce hata vermemesi için verileri null ata """
     flight_source = ColumnDataSource({
@@ -20,7 +19,6 @@ def modify_doc(doc):
         'baro_altitude':[],'on_ground':[],'velocity':[],'true_track':[],
         'vertical_rate':[],'sensors':[],'geo_altitude':[],'squawk':[],'spi':[],
         'position_source':[],'MercatorX':[],'MercatorY':[],'rot_angle':[],'url_data':[] })
-    
     
     def update():
         """ Gelen coğrafi koordinatları web mercator dönüştür """
@@ -74,36 +72,29 @@ def modify_doc(doc):
         n_roll = len(flight_df.index)
         flight_source.stream(flight_df.to_dict(orient="list"),n_roll)
         
-        
             
     
-    doc.add_periodic_callback(update, 1000)
+    doc.add_periodic_callback(update, 5000)
     
     """ Nerelere şekil çizileceğine dair bilgileri gir """
     p = figure(plot_width=900, plot_height=700, x_range=(3000000, 5000000), y_range=(3500000, 6000000),
                x_axis_type="mercator", y_axis_type="mercator", tooltips=[("Ülke", "@origin_country"), 
                 ("Uçak Adı", "@callsign"), ("(Long, Lat)", "(@long, @lat)")], title = "Anlık Uçak Konumları")
-
+    
  
     """ Uçak figürlerini çizdir """
     p.image_url(url='url_data', x='MercatorX', y='MercatorY', source=flight_source, anchor='center', angle_units='deg', angle='rot_angle', h_units='screen', w_units='screen', w=25, h=25)
-
+    
 
     """ Çizilecek şekilleri ayarla """
     p.circle(x="MercatorX", y="MercatorY", size=7, fill_color="red", line_color="black", fill_alpha=1, source=flight_source)
 
-
-
     """ Harita altlığını çağır """
     tile_provider = get_provider(OSM)
-    """ Karanlık mod ekle """
-    curdoc().theme = 'dark_minimal'
     """ Harita altlığını p şekilleri ile birleştir """
     p.add_tile(tile_provider)
 
-
     
-
     doc.add_root(p)
 
     
