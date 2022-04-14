@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from bokeh.plotting import figure
 from bokeh.tile_providers import get_provider, OSM
-from bokeh.io import output_notebook, show
+from bokeh.io import output_notebook, show, curdoc
 from bokeh.models import ColumnDataSource
 
 """ Kodun Notebook üzerinde çıktı vermesi için """
@@ -72,7 +72,8 @@ def modify_doc(doc):
         n_roll = len(flight_df.index)
         flight_source.stream(flight_df.to_dict(orient="list"),n_roll)
         
-            
+        """ Karanlık mod ekle """
+        curdoc().theme = 'dark_minimal'
     
     doc.add_periodic_callback(update, 5000)
     
