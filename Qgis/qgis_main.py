@@ -2,28 +2,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 """ pandas kütüphanesi ile yapılan analizler """
 df = pd.read_csv('data.csv')
 #df.head()
 #print(df)
-countrys = df.value_counts('origin_country')
-#print(countrys)
-liste = list(countrys)
-#print(liste)
-
+countrys = df.value_counts('callsign') #origin_country
+print(countrys)
 
 """ matplotlip kütüphanesi ile yapılabilecek grafikler """
 plt.ylabel("Havadaki Uçak Sayısı")
 plt.xlabel("Ülkeler")
-plt.xticks(countrys, rotation='vertical', size=8)
-plt.plot(liste, 'go-')
+plt.xticks(rotation='vertical', size=8)
+plt.plot(countrys, 'go-')
 plt.show()
-
-
-
-
-
-
-
-
