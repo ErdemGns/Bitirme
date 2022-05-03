@@ -16,6 +16,14 @@ liste = list(countrys)
 """ matplotlip kütüphanesi ile yapılabilecek grafikler """
 plt.ylabel("Havadaki Uçak Sayısı")
 plt.xlabel("Ülkeler")
-plt.xticks(rotation='vertical', size=8)
-plt.plot(liste, 'o-')
+plt.xticks(countrys, rotation='vertical', size=8)
+plt.plot(liste, 'go-')
 plt.show()
+
+
+
+
+
+
+
+
