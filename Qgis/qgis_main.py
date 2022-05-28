@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 
 """ pandas kütüphanesi ile yapılan analizler """
 df = pd.read_csv('data.csv')
-#df.head()
-#print(df)
 countrys = df.value_counts('callsign') #origin_country
 print(countrys)
 
