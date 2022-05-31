@@ -8,7 +8,7 @@ lon_min,lat_min = 25, 35
 lon_max,lat_max = 45, 45
 
 # CSV çıkış dosyası
-csv_data='data.csv'
+csv_data = 'data.csv'
 
 # REST API'den veri isteğinde bulun
 user_name=''
