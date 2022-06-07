@@ -2,10 +2,12 @@
 import requests
 import pandas as pd
 import numpy as np
-from bokeh.plotting import figure
+from bokeh.plotting import figure, output_file, save
 from bokeh.tile_providers import get_provider, OSM
-from bokeh.io import show, curdoc
+from bokeh.io import show, curdoc, output_notebook
 
+""" Kodun Notebook üzerinde çıktı vermesi için """
+output_notebook()
 
 """ Gelen coğrafi koordinatları web mercator dönüştür """
 def wgs84_to_web_mercator(df, lon="long", lat="lat"):
@@ -79,4 +81,7 @@ p.circle(x="MercatorX", y="MercatorY", size=7, fill_color="red", line_color="bla
 
 """ Haritayı göster """
 show(p)
+
+output_file(filename="statik.html", title="Static HTML file")
+save(p)
 

@@ -10,6 +10,7 @@ from bokeh.models import ColumnDataSource
 """ Kodun Notebook üzerinde çıktı vermesi için """
 output_notebook()
 
+
 def modify_doc(doc):
     
     """ İlk figürlerin oluşmasından önce hata vermemesi için verileri null ata """
@@ -101,4 +102,6 @@ def modify_doc(doc):
     
 """ Haritayı göster """
 show(modify_doc)
+
+
 
